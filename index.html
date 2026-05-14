@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard | Elderly Care Management</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root{
+      --navy:#06275a;
+      --navy2:#0b3a78;
+      --gold:#d9a514;
+      --gold2:#f3c543;
+      --bg:#f4f7fb;
+      --card:#ffffff;
+      --text:#0d1b3e;
+      --muted:#68758d;
+      --line:#e6ebf3;
+      --green:#0f9f6e;
+      --red:#dc3545;
+      --shadow:0 14px 30px rgba(8,35,80,.10);
+      --radius:22px;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:"IBM Plex Sans Thai",sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    .app{
+      min-height:100vh;
+      display:grid;
+      grid-template-columns:285px 1fr;
+    }
+
+    aside{
+      background:linear-gradient(180deg,var(--navy),#031b42);
+      color:#fff;
+      padding:24px 18px;
+      position:sticky;
+      top:0;
+      height:100vh;
+      overflow:auto;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      padding:4px 8px 28px;
+    }
+
+    .logo{
+      width:58px;
+      height:58px;
+      border-radius:18px;
+      background:linear-gradient(135deg,var(--gold),#fff2a8);
+      display:grid;
+      place-items:center;
+      color:var(--navy);
+      font-weight:800;
+      font-size:24px;
+      box-shadow:0 10px 20px rgba(217,165,20,.25);
+    }
+
+    .brand h1{
+      margin:0;
+      font-size:19px;
+      line-height:1.2;
+      color:#fff;
+      letter-spacing:.2px;
+    }
+
+    .brand small{
+      color:#ffdc73;
+      font-weight:500;
+    }
+
+    .nav{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:8px;
+    }
+
+    .nav a{
+      color:#dce9ff;
+      text-decoration:none;
+      padding:14px 16px;
+      border-radius:14px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-weight:600;
+      transition:.2s;
+    }
+
+    .nav a.active,.nav a:hover{
+      background:linear-gradient(135deg,var(--gold),#eec24c);
+      color:#fff;
+      box-shadow:0 10px 22px rgba(217,165,20,.25);
+      transform:translateY(-1px);
+    }
+
+    .side-card{
+      margin-top:28px;
+      border:1px solid rgba(255,255,255,.2);
+      border-radius:20px;
+      overflow:hidden;
+      background:rgba(255,255,255,.06);
+    }
+
+    .side-illus{
+      height:190px;
+      background:
+        linear-gradient(135deg,rgba(255,255,255,.16),rgba(217,165,20,.20)),
+        url("https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=600&auto=format&fit=crop");
+      background-size:cover;
+      background-position:center;
+    }
+
+    .side-card p{
+      padding:18px;
+      margin:0;
+      font-weight:600;
+      line-height:1.6;
+    }
+
+    main{
+      min-width:0;
+      padding-bottom:36px;
+    }
+
+    header{
+      min-height:88px;
+      background:#fff;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:18px;
+      padding:18px 30px;
+      position:sticky;
+      top:0;
+      z-index:5;
+      box-shadow:0 5px 20px rgba(8,35,80,.04);
+    }
+
+    .title h2{
+      margin:0 0 4px;
+      color:var(--navy);
+      font-size:24px;
+      line-height:1.25;
+    }
+
+    .title p{
+      margin:0;
+      color:var(--text);
+      font-size:14px;
+    }
+
+    .top-actions{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .pill{
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--navy);
+      border-radius:999px;
+      padding:10px 14px;
+      font-weight:700;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      white-space:nowrap;
+    }
+
+    .btn{
+      border:0;
+      background:linear-gradient(135deg,var(--navy),var(--navy2));
+      color:#fff;
+      padding:10px 14px;
+      border-radius:12px;
+      font-family:inherit;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow:0 8px 18px rgba(6,39,90,.18);
+    }
+
+    .btn.gold{
+      background:linear-gradient(135deg,var(--gold),var(--gold2));
+    }
+
+    .container{
+      padding:28px 30px 10px;
+    }
+
+    .notice{
+      background:linear-gradient(135deg,#fff,#fff8dc);
+      border:1px solid #f2dc93;
+      border-radius:18px;
+      padding:14px 18px;
+      margin-bottom:18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      color:#59430a;
+      box-shadow:0 8px 22px rgba(217,165,20,.09);
+    }
+
+    .notice b{color:var(--navy)}
+
+    .filters{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(160px,1fr));
+      gap:14px;
+      margin-bottom:18px;
+    }
+
+    .field{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:12px 14px;
+      box-shadow:0 8px 20px rgba(8,35,80,.04);
+    }
+
+    .field label{
+      display:block;
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:6px;
+      font-weight:700;
+    }
+
+    select,input{
+      width:100%;
+      border:0;
+      outline:0;
+      font-family:inherit;
+      font-size:15px;
+      color:var(--navy);
+      background:transparent;
+      font-weight:600;
+    }
+
+    .kpis{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(180px,1fr));
+      gap:18px;
+      margin-bottom:20px;
+    }
+
+    .kpi{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:20px;
+      box-shadow:var(--shadow);
+      display:flex;
+      align-items:center;
+      gap:16px;
+      min-height:126px;
+    }
+
+    .kpi .icon{
+      width:64px;
+      height:64px;
+      border-radius:22px;
+      display:grid;
+      place-items:center;
+      font-size:28px;
+      color:#fff;
+      background:linear-gradient(135deg,var(--navy),#0f59a8);
+      flex:0 0 auto;
+    }
+
+    .kpi.gold .icon{
+      background:linear-gradient(135deg,var(--gold),#f3c543);
+    }
+
+    .kpi h3{
+      margin:0;
+      color:var(--muted);
+      font-size:15px;
+    }
+
+    .kpi .num{
+      font-size:32px;
+      font-weight:800;
+      color:var(--text);
+      line-height:1.1;
+      margin-top:5px;
+    }
+
+    .kpi small{
+      color:var(--green);
+      font-weight:700;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1.35fr .9fr;
+      gap:18px;
+      margin-bottom:18px;
+    }
+
+    .grid3{
+      display:grid;
+      grid-template-columns:.85fr 1fr 1.15fr;
+      gap:18px;
+      margin-bottom:18px;
+    }
+
+    .card{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:20px;
+      box-shadow:var(--shadow);
+      min-width:0;
+    }
+
+    .card-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:12px;
+      gap:10px;
+    }
+
+    .card h3{
+      margin:0;
+      color:var(--navy);
+      font-size:18px;
+    }
+
+    .card small{
+      color:var(--muted);
+      font-weight:600;
+    }
+
+    canvas{max-width:100%;}
+
+    .table-wrap{
+      overflow:auto;
+      max-height:430px;
+      border-radius:16px;
+      border:1px solid var(--line);
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:900px;
+      background:#fff;
+    }
+
+    th,td{
+      padding:12px 14px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+      font-size:14px;
+      white-space:nowrap;
+    }
+
+    th{
+      position:sticky;
+      top:0;
+      background:var(--navy);
+      color:#fff;
+      z-index:1;
+    }
+
+    tr:hover td{
+      background:#f9fbff;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:800;
+    }
+
+    .pass{background:#dff8ee;color:#08734e}
+    .fail{background:#fde5e8;color:#b42332}
+    .neutral{background:#edf2fb;color:#24446f}
+
+    .footer{
+      margin-top:22px;
+      background:linear-gradient(135deg,var(--navy),#031b42);
+      color:#fff;
+      border-radius:22px;
+      padding:18px 22px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+
+    .footer b{color:#ffe07b}
+
+    .loading{
+      position:fixed;
+      inset:0;
+      background:rgba(244,247,251,.86);
+      backdrop-filter:blur(6px);
+      z-index:20;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+    }
+
+    .loader{
+      background:#fff;
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      padding:26px;
+      text-align:center;
+      width:min(420px,100%);
+      border:1px solid var(--line);
+    }
+
+    .spinner{
+      width:50px;
+      height:50px;
+      border-radius:999px;
+      border:5px solid #e9eef7;
+      border-top-color:var(--gold);
+      margin:0 auto 16px;
+      animation:spin 1s linear infinite;
+    }
+
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    .error-box{
+      display:none;
+      background:#fff3f4;
+      border:1px solid #ffd0d7;
+      color:#9b1c2c;
+      padding:14px 18px;
+      border-radius:18px;
+      margin-bottom:18px;
+      font-weight:600;
+    }
+
+    @media (max-width:1100px){
+      .app{grid-template-columns:1fr}
+      aside{position:relative;height:auto}
+      .nav{display:grid;grid-template-columns:repeat(2,1fr)}
+      .side-card{display:none}
+      .grid,.grid3{grid-template-columns:1fr}
+      .kpis{grid-template-columns:repeat(2,1fr)}
+      .filters{grid-template-columns:repeat(2,1fr)}
+    }
+
+    @media (max-width:640px){
+      header{padding:16px;align-items:flex-start;flex-direction:column}
+      .container{padding:16px}
+      .kpis,.filters{grid-template-columns:1fr}
+      .nav{grid-template-columns:1fr}
+      .title h2{font-size:20px}
+      .footer{flex-direction:column;align-items:flex-start}
+    }
+    .logo img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  padding:6px;
+}
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loadingOverlay">
+    <div class="loader">
+      <div class="spinner"></div>
+      <h3 style="margin:0;color:#06275a">กำลังเชื่อมต่อ</h3>
+      <p id="loadMsg" style="margin:8px 0 0;color:#68758d">กำลังโหลดข้อมูล Dashboard...</p>
+    </div>
+  </div>
+
+  <div class="app">
+    <aside>
+      <div class="brand">
+        <div class="logo">
+          <img src="logo.png" alt="Logo">
+        </div>
+        <div>
+          <h1>Elderly Care<br><small>Management Academy</small></h1>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <a class="active" href="#dashboard">▦ Dashboard</a>
+        <a href="#overview">◉ ภาพรวมหลักสูตร</a>
+        <a href="#participants">👥 ผู้เข้าอบรม</a>
+        <a href="#results">▣ ผลการอบรม</a>
+        <a href="#table">☰ ตารางข้อมูล</a>
+      </nav>
+
+      <div class="side-card">
+        <div class="side-illus"></div>
+        <p>ยกระดับการดูแลผู้สูงอายุ<br>ด้วยความรู้ คุณธรรม และหัวใจบริการ ❤</p>
+      </div>
+    </aside>
+
+    <main>
+      <header>
+        <div class="title">
+          <h2>หลักสูตรนักจัดการดูแลผู้สูงอายุเชิงปฏิบัติระดับมืออาชีพ</h2>
+          <p>(Professional Practicum in Elderly Care Management for Home and Long-Term Care Settings)</p>
+        </div>
+        <div class="top-actions">
+          <div class="pill">🟢 <span id="statusText">Ready</span></div>
+          <button class="btn" onclick="loadData()">รีเฟรชข้อมูล</button>
+        </div>
+      </header>
+
+      <section class="container" id="dashboard">
+        <div class="notice">
+          <div>
+            <b>Dashboard</b><br>
+            <span id="lastUpdate">ยังไม่ได้โหลดข้อมูล</span>
+          </div>
+          <button class="btn gold" onclick="openSheet()">เปิด Google Sheet</button>
+        </div>
+
+        <div class="error-box" id="errorBox"></div>
+
+        <div class="filters">
+          <div class="field">
+            <label>ค้นหา</label>
+            <input id="searchInput" placeholder="ค้นหาชื่อ/อาชีพ/ประเภท..." oninput="applyFilters()">
+          </div>
+          <div class="field">
+            <label>ประเภทผู้เข้าอบรม</label>
+            <select id="typeFilter" onchange="applyFilters()"><option value="">ทั้งหมด</option></select>
+          </div>
+          <div class="field">
+            <label>เพศ</label>
+            <select id="genderFilter" onchange="applyFilters()"><option value="">ทั้งหมด</option></select>
+          </div>
+          <div class="field">
+            <label>ผลการอบรม</label>
+            <select id="resultFilter" onchange="applyFilters()">
+              <option value="">ทั้งหมด</option>
+              <option value="ผ่าน">ผ่าน</option>
+              <option value="ไม่ผ่าน">ไม่ผ่าน</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="kpis">
+          <div class="kpi">
+            <div class="icon">👥</div>
+            <div><h3>ผู้เข้าอบรมทั้งหมด</h3><div class="num" id="kpiTotal">0</div><small>รายการจากข้อมูลจริง</small></div>
+          </div>
+          <div class="kpi gold">
+            <div class="icon">🎓</div>
+            <div><h3>คะแนนเฉลี่ย Post-test</h3><div class="num" id="kpiPost">0</div><small>ค่าเฉลี่ยหลังอบรม</small></div>
+          </div>
+          <div class="kpi">
+            <div class="icon">✅</div>
+            <div><h3>ผ่านการอบรม</h3><div class="num" id="kpiPass">0</div><small id="kpiPassRate">0%</small></div>
+          </div>
+          <div class="kpi gold">
+            <div class="icon">⭐</div>
+            <div><h3>ความพึงพอใจเฉลี่ย</h3><div class="num" id="kpiSat">0</div><small>จากคะแนนที่บันทึก</small></div>
+          </div>
+        </div>
+
+        <div class="grid" id="overview">
+          <div class="card">
+            <div class="card-head">
+              <h3>แนวโน้มคะแนน Pre-test / Post-test</h3>
+              <small>เปรียบเทียบรายลำดับข้อมูล</small>
+            </div>
+            <canvas id="scoreChart" height="150"></canvas>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <h3>จำแนกตามประเภทผู้เข้าอบรม</h3>
+              <small id="typeCountText">0 กลุ่ม</small>
+            </div>
+            <canvas id="typeChart" height="185"></canvas>
+          </div>
+        </div>
+
+        <div class="grid3" id="participants">
+          <div class="card">
+            <div class="card-head">
+              <h3>จำแนกตามเพศ</h3>
+              <small>จำนวนคน</small>
+            </div>
+            <canvas id="genderChart" height="220"></canvas>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <h3>จำแนกตามช่วงอายุ</h3>
+              <small>จำนวนคน</small>
+            </div>
+            <canvas id="ageChart" height="220"></canvas>
+          </div>
+
+          <div class="card" id="results">
+            <div class="card-head">
+              <h3>สรุปผลการอบรมล่าสุด</h3>
+              <small>ผ่าน / ไม่ผ่าน</small>
+            </div>
+            <canvas id="resultChart" height="220"></canvas>
+          </div>
+        </div>
+
+        <div class="card" id="table">
+          <div class="card-head">
+            <h3>ตารางข้อมูลผู้เข้าอบรม</h3>
+            <small id="rowCount">0 รายการ</small>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead id="tableHead"></thead>
+              <tbody id="tableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div>© 2026 Elderly Care Management Dashboard: คณะพยาบาลศาสตร์ มหาวิทยาลัยรามคำแหง</div>
+          <div><b>Upskill • Reskill • Professional Care</b></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    /*
+      สำคัญ:
+      ให้นำ URL จาก Apps Script Web App ที่ Deploy แล้วมาใส่ตรงนี้
+      ตัวอย่าง:
+      const API_URL = "https://script.google.com/macros/s/AKfycbxxxxxxxxxxxxxxxxxxxx/exec";
+    */
+    const API_URL = "https://script.google.com/macros/s/AKfycbwF_aditMJjhMYBeT7pvJftQF3n76Yp5_gSL9mBfoYi7N3BxQ4rxHXWQGSPTSRa9yvp/exec";
+
+    const SHEET_URL = "https://docs.google.com/spreadsheets/d/1XQLK7zzi1iEzCMEAW8eVUV9hI2kb5P-4CRqigy1hWXg/edit?gid=1824119399";
+
+    let allRows = [];
+    let filteredRows = [];
+    let headers = [];
+    let dashboard = null;
+    let fields = {};
+    let charts = {};
+
+    function openSheet(){
+      window.open(SHEET_URL, "_blank");
+    }
+
+    function showLoading(show, msg){
+      const el = document.getElementById("loadingOverlay");
+      if(msg) document.getElementById("loadMsg").textContent = msg;
+      el.style.display = show ? "flex" : "none";
+    }
+
+    function showError(message){
+      const el = document.getElementById("errorBox");
+      if(!message){
+        el.style.display = "none";
+        el.textContent = "";
+        return;
+      }
+      el.style.display = "block";
+      el.textContent = message;
+    }
+
+    async function loadData(){
+      showError("");
+
+      if(!API_URL || API_URL.includes("PUT_YOUR_APPS_SCRIPT")){
+        showLoading(false);
+        showError("ยังไม่ได้ใส่ Apps Script Web App URL ในตัวแปร API_URL กรุณา Deploy Code.gs แล้วนำ URL /exec มาใส่ก่อน");
+        document.getElementById("statusText").textContent = "Need API URL";
+        return;
+      }
+
+      showLoading(true, "กำลังโหลดข้อมูล");
+      document.getElementById("statusText").textContent = "Loading";
+
+      try{
+        const res = await fetch(API_URL + "?action=dashboard&t=" + Date.now());
+        const json = await res.json();
+
+        if(!json.ok){
+          throw new Error(json.error || "ฐานข้อมูลตอบกลับไม่สำเร็จ");
+        }
+
+        dashboard = json.dashboard;
+        headers = dashboard.headers || [];
+        fields = dashboard.fields || {};
+        allRows = dashboard.rows || [];
+        filteredRows = [...allRows];
+
+        buildFilters();
+        applyFilters();
+
+        document.getElementById("lastUpdate").textContent =
+          "อัปเดตล่าสุด: " + new Date(json.timestamp || Date.now()).toLocaleString("th-TH");
+
+        document.getElementById("statusText").textContent = "Online";
+        showLoading(false);
+
+      }catch(err){
+        console.error(err);
+        showLoading(false);
+        document.getElementById("statusText").textContent = "Error";
+        showError("เชื่อมต่อไม่สำเร็จ: " + err.message + " | ตรวจสอบว่า Deploy Apps Script เป็น Web app และสิทธิ์เป็น Anyone แล้ว");
+      }
+    }
+
+    function getVal(row, key){
+      const h = fields[key];
+      return h ? (row[h] || "") : "";
+    }
+
+    function normalize(v){
+      return String(v || "").trim().toLowerCase().replace(/\s+/g, "");
+    }
+
+    function toNum(v){
+      const n = parseFloat(String(v || "").replace(/[^\d.-]/g,""));
+      return Number.isFinite(n) ? n : 0;
+    }
+
+    function formatNum(n){
+      return Number(n || 0).toLocaleString("th-TH");
+    }
+
+    function avg(arr){
+      const nums = arr.map(toNum).filter(n => n > 0);
+      if(!nums.length) return 0;
+      return nums.reduce((a,b)=>a+b,0) / nums.length;
+    }
+
+    function unique(arr){
+      return [...new Set(arr.map(x => String(x || "").trim()).filter(Boolean))]
+        .sort((a,b)=>a.localeCompare(b,"th"));
+    }
+
+    function fillSelect(id, items){
+      const sel = document.getElementById(id);
+      const current = sel.value;
+      sel.innerHTML = '<option value="">ทั้งหมด</option>';
+      items.forEach(item => {
+        const opt = document.createElement("option");
+        opt.value = item;
+        opt.textContent = item;
+        sel.appendChild(opt);
+      });
+      sel.value = current;
+    }
+
+    function buildFilters(){
+      fillSelect("typeFilter", unique(allRows.map(r => getVal(r,"type"))));
+      fillSelect("genderFilter", unique(allRows.map(r => getVal(r,"gender"))));
+    }
+
+    function applyFilters(){
+      const q = normalize(document.getElementById("searchInput").value);
+      const type = document.getElementById("typeFilter").value;
+      const gender = document.getElementById("genderFilter").value;
+      const result = document.getElementById("resultFilter").value;
+
+      filteredRows = allRows.filter(row => {
+        const text = normalize(Object.values(row).join(" "));
+        const okQ = !q || text.includes(q);
+        const okType = !type || getVal(row,"type") === type;
+        const okGender = !gender || getVal(row,"gender") === gender;
+        const resultText = normalize(getVal(row,"result"));
+        const okResult = !result || resultText.includes(normalize(result));
+        return okQ && okType && okGender && okResult;
+      });
+
+      updateKpis();
+      renderCharts();
+      renderTable();
+    }
+
+    function updateKpis(){
+      const total = filteredRows.length;
+      const postAvg = avg(filteredRows.map(r => getVal(r,"post")));
+      const satAvg = avg(filteredRows.map(r => getVal(r,"satisfaction")));
+      const passRows = filteredRows.filter(r => {
+        const v = normalize(getVal(r,"result"));
+        return v.includes("ผ่าน") && !v.includes("ไม่ผ่าน");
+      });
+      const pass = passRows.length;
+      const passRate = total ? (pass / total * 100) : 0;
+
+      document.getElementById("kpiTotal").textContent = formatNum(total);
+      document.getElementById("kpiPost").textContent = postAvg ? postAvg.toFixed(1) : "0";
+      document.getElementById("kpiPass").textContent = formatNum(pass);
+      document.getElementById("kpiPassRate").textContent = passRate.toFixed(1) + "%";
+      document.getElementById("kpiSat").textContent = satAvg ? satAvg.toFixed(1) : "0";
+    }
+
+    function countBy(rows, key, fallback="ไม่ระบุ"){
+      const map = {};
+      rows.forEach(r => {
+        const v = getVal(r,key) || fallback;
+        map[v] = (map[v] || 0) + 1;
+      });
+      return map;
+    }
+
+    function ageGroup(age){
+      const n = toNum(age);
+      if(!n) return "ไม่ระบุ";
+      if(n <= 25) return "18–25 ปี";
+      if(n <= 35) return "26–35 ปี";
+      if(n <= 45) return "36–45 ปี";
+      if(n <= 55) return "46–55 ปี";
+      if(n <= 65) return "56–65 ปี";
+      return "66 ปีขึ้นไป";
+    }
+
+    function resultGroup(row){
+      const v = normalize(getVal(row,"result"));
+      if(v.includes("ไม่ผ่าน")) return "ไม่ผ่าน";
+      if(v.includes("ผ่าน")) return "ผ่าน";
+      return "ไม่ระบุ";
+    }
+
+    function destroyChart(id){
+      if(charts[id]){
+        charts[id].destroy();
+        delete charts[id];
+      }
+    }
+
+    function makeChart(id, config){
+      destroyChart(id);
+      charts[id] = new Chart(document.getElementById(id), config);
+    }
+
+    function renderCharts(){
+      const labels = filteredRows.map((r,i)=> getVal(r,"no") || (i+1));
+      const pre = filteredRows.map(r => toNum(getVal(r,"pre")));
+      const post = filteredRows.map(r => toNum(getVal(r,"post")));
+
+      makeChart("scoreChart",{
+        type:"line",
+        data:{
+          labels,
+          datasets:[
+            {label:"Pre-test", data:pre, borderColor:"#d9a514", backgroundColor:"rgba(217,165,20,.12)", tension:.35, pointRadius:3},
+            {label:"Post-test", data:post, borderColor:"#06275a", backgroundColor:"rgba(6,39,90,.10)", tension:.35, pointRadius:3}
+          ]
+        },
+        options:{
+          responsive:true,
+          plugins:{legend:{position:"top"}},
+          scales:{y:{beginAtZero:true, grid:{color:"#edf1f7"}}, x:{ticks:{maxTicksLimit:12}, grid:{display:false}}}
+        }
+      });
+
+      const typeMap = countBy(filteredRows,"type");
+      document.getElementById("typeCountText").textContent = Object.keys(typeMap).length + " กลุ่ม";
+      makeChart("typeChart",{
+        type:"doughnut",
+        data:{
+          labels:Object.keys(typeMap),
+          datasets:[{data:Object.values(typeMap), backgroundColor:["#06275a","#1558a6","#d9a514","#88a9d6","#cbd5e1","#0b3a78"]}]
+        },
+        options:{responsive:true, plugins:{legend:{position:"right"}}}
+      });
+
+      const genderMap = countBy(filteredRows,"gender");
+      makeChart("genderChart",{
+        type:"doughnut",
+        data:{
+          labels:Object.keys(genderMap),
+          datasets:[{data:Object.values(genderMap), backgroundColor:["#06275a","#d9a514","#88a9d6","#cbd5e1"]}]
+        },
+        options:{responsive:true, plugins:{legend:{position:"bottom"}}}
+      });
+
+      const ageMap = {};
+      filteredRows.forEach(r => {
+        const g = ageGroup(getVal(r,"age"));
+        ageMap[g] = (ageMap[g] || 0) + 1;
+      });
+
+      const ageOrder = ["18–25 ปี","26–35 ปี","36–45 ปี","46–55 ปี","56–65 ปี","66 ปีขึ้นไป","ไม่ระบุ"];
+      const ageLabels = ageOrder.filter(k => ageMap[k]);
+
+      makeChart("ageChart",{
+        type:"bar",
+        data:{
+          labels:ageLabels,
+          datasets:[{label:"จำนวน", data:ageLabels.map(k=>ageMap[k]), backgroundColor:"#0b3a78", borderRadius:12}]
+        },
+        options:{
+          responsive:true,
+          plugins:{legend:{display:false}},
+          scales:{y:{beginAtZero:true, grid:{color:"#edf1f7"}}, x:{grid:{display:false}}}
+        }
+      });
+
+      const resultMap = {};
+      filteredRows.forEach(r => {
+        const g = resultGroup(r);
+        resultMap[g] = (resultMap[g] || 0) + 1;
+      });
+
+      makeChart("resultChart",{
+        type:"bar",
+        data:{
+          labels:Object.keys(resultMap),
+          datasets:[{label:"จำนวน", data:Object.values(resultMap), backgroundColor:["#0f9f6e","#dc3545","#cbd5e1"], borderRadius:12}]
+        },
+        options:{
+          responsive:true,
+          plugins:{legend:{display:false}},
+          scales:{y:{beginAtZero:true, grid:{color:"#edf1f7"}}, x:{grid:{display:false}}}
+        }
+      });
+    }
+
+    function visibleHeaders(){
+      // ซ่อนคอลัมน์สุดท้ายจากการแสดงผลในหน้า Dashboard
+      // ข้อมูลใน Google Sheet ยังอยู่ครบ ไม่ถูกลบ
+      return headers.slice(0, -1);
+    }
+
+    function renderTable(){
+      document.getElementById("rowCount").textContent = formatNum(filteredRows.length) + " รายการ";
+      const head = document.getElementById("tableHead");
+      const body = document.getElementById("tableBody");
+      const displayHeaders = visibleHeaders();
+
+      head.innerHTML = "<tr>" + displayHeaders.map(h => `<th>${escapeHTML(h)}</th>`).join("") + "</tr>";
+
+      body.innerHTML = filteredRows.map(row => {
+        return "<tr>" + displayHeaders.map(h => {
+          const val = row[h] || "";
+          const hn = normalize(h);
+          const isResult = hn.includes("ผ่าน") || hn.includes("result") || hn.includes("ผล");
+          if(isResult){
+            const cls = normalize(val).includes("ไม่ผ่าน") ? "fail" : (normalize(val).includes("ผ่าน") ? "pass" : "neutral");
+            return `<td><span class="badge ${cls}">${escapeHTML(val || "-")}</span></td>`;
+          }
+          return `<td>${escapeHTML(val)}</td>`;
+        }).join("") + "</tr>";
+      }).join("");
+    }
+
+    function escapeHTML(str){
+      return String(str ?? "").replace(/[&<>"']/g, m => ({
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;",
+        "'":"&#039;"
+      }[m]));
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
